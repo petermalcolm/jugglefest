@@ -1,10 +1,19 @@
+require './hungarian.rb'
 
 class JuggleFest
 
 	def initialize()
 		if ARGV.length < 1
-		  puts "Too few arguments"
+		  puts "Too few arguments - provide a file"
 		  exit
+		end
+		if "H" === ARGV[0]
+			if ARGV.length < 2
+			  puts "Too few arguments - provide a hungarian grid file"
+			  exit
+			end
+			hungarian = Hungarian.new(nil,nil,ARGV[1])
+			exit
 		end
 		@circuits = Hash.new
 		@jugglers = Hash.new
