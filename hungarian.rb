@@ -1,4 +1,5 @@
 # Implementation of the Hungarian algorithm for weighted matching
+# Big thanks to http://www.hungarianalgorithm.com/ for step-by-step
 
 class Hungarian
 
@@ -14,6 +15,15 @@ class Hungarian
 			@tie_breaker_grid = tie_breaker_grid
 		end
 
+		# make a clone for later
+		copy = grid_clone
+
+		# do the algorithm:
+		@global_max = invert
+		subtract_row_minima
+
+		puts "Grid \n" + @grid.inspect
+		puts "Copy \n" + copy.inspect
 	end
 
 	def ingest_file(file_name)
@@ -29,6 +39,54 @@ class Hungarian
 		return grid	
 	end
 
+	def grid_clone # deep clone
+		copy = Array.new
+		@grid.each do |row|
+			temp_row = Array.new
+			row.each do |val|
+				temp_row.push(val.to_i)
+			end
+			copy.push(temp_row)
+		end
+		return copy
+	end
 
+	# invert the sign of the grid, then add max
+	def invert
+		max = 0
+		@grid.each_with_index do |row, r_idx|
+			row.each_with_index do |val, v_idx|
+				if val.to_i > max then max = val.to_i end
+				@grid[r_idx][v_idx] = -val.to_i
+			end
+		end
+		@grid.each_with_index do |row, r_idx|
+			row.each_with_index do |val, v_idx|
+				@grid[r_idx][v_idx] = val + max
+			end
+		end
+		return max
+	end
+
+	def subtract_row_minima
+		@grid.each_with_index do |row, r_idx|
+			min = @global_max
+			row.each do |val|
+				if val < min then min = val end
+			end
+			row.each_with_index do |val, v_idx|
+				@grid[r_idx][v_idx] = val - min
+			end
+		end
+	end
+
+	def subtract_column_minima
+	end
+
+	def evaluate
+	end
+
+	def break_ties
+	end
 
 end
