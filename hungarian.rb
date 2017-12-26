@@ -42,6 +42,10 @@ class Hungarian
 	def grid_clone # deep clone
 		copy = Array.new
 		@grid.each do |row|
+			if row.count != @grid.count # sanity check
+				puts "Error. Input data is not square"
+				exit
+			end
 			temp_row = Array.new
 			row.each do |val|
 				temp_row.push(val.to_i)
@@ -81,6 +85,9 @@ class Hungarian
 	end
 
 	def subtract_column_minima
+		@grid[0].each_with_index do |val, v_idx|
+
+		end
 	end
 
 	def evaluate
