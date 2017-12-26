@@ -13,6 +13,7 @@ class JuggleFest
 			  exit
 			end
 			hungarian = Hungarian.new(nil,nil,ARGV[1])
+			puts hungarian.solved
 			exit
 		end
 		@circuits = Hash.new

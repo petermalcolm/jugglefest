@@ -2,9 +2,12 @@
 # Big thanks to http://www.hungarianalgorithm.com/ for step-by-step
 
 class Hungarian
+	attr_reader :solved
 
 	# grid must be a square array
 	def initialize(grid, tie_breaker_grid, file_name)
+		@solved = false
+
 		if grid.nil?
 			@grid = ingest_file(file_name)
 		else
