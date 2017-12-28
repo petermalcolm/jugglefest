@@ -39,7 +39,7 @@ class Hungarian
 			@assignments = assign
 		end
 		if sanity >= 1000
-			puts "Error! Hungarian algorithm did not converge in " + sanity + " iterations."
+			puts "Error! Hungarian algorithm did not converge in " + sanity.inspect + " iterations."
 			exit
 		end
 		@solved = true
