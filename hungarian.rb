@@ -26,12 +26,23 @@ class Hungarian
 		subtract_row_minima
 		subtract_column_minima
 		@assignments = assign
-		if @assignments[ :row ].count === @grid.count
-			@solved = true
-		else
+
+		sanity = 0
+		while !@assignments[ :row ].count.eql? @grid.count and sanity < 1000
+			sanity += 1
 			marked = mark
 			puts marked.inspect
+			smallest_unmarked = smallest_un(marked)
+			subtract_from_un(marked, smallest_unmarked)
+			add_to_doubly(marked, smallest_unmarked)
+			puts "Grid after subtract and add: \n" + @grid.inspect
+			@assignments = assign
 		end
+		if sanity >= 1000
+			puts "Error! Hungarian algorithm did not converge in " + sanity + " iterations."
+			exit
+		end
+		@solved = true
 
 		puts "Grid \n" + @grid.inspect
 		# puts "Copy \n" + copy.inspect
@@ -160,10 +171,47 @@ class Hungarian
 			return false
 		end
 
-		def evaluate
+		def smallest_un(marked)
+			min = @global_max
+			@grid.each_with_index do |row, r_idx|
+				if marked[ :row ].include? r_idx
+					next
+				end
+				row.each_with_index do |val, v_idx|
+					if marked[ :column ].include? v_idx
+						next
+					end
+					if val < min then min = val end
+				end
+			end
+			return min
 		end
 
-		def break_ties
+		def subtract_from_un(marked, smallest_unmarked)
+			@grid.each_with_index do |row, r_idx|
+				if marked[ :row ].include? r_idx
+					next
+				end
+				row.each_with_index do |val, v_idx|
+					if marked[ :column ].include? v_idx
+						next
+					end
+					@grid[r_idx][v_idx] = @grid[r_idx][v_idx] - smallest_unmarked
+				end
+			end
 		end
 
+		def add_to_doubly(marked, smallest_unmarked)
+			@grid.each_with_index do |row, r_idx|
+				if !marked[ :row ].include? r_idx
+					next
+				end
+				row.each_with_index do |val, v_idx|
+					if !marked[ :column ].include? v_idx
+						next
+					end
+					@grid[r_idx][v_idx] = @grid[r_idx][v_idx] + smallest_unmarked
+				end
+			end
+		end
 end

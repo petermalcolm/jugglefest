@@ -13,7 +13,8 @@ class JuggleFest
 			  exit
 			end
 			hungarian = Hungarian.new(nil,nil,ARGV[1])
-			puts hungarian.solved
+			puts "Hungarian algorithm solved it? " + hungarian.solved.inspect
+			puts "Here are the assignments: " + hungarian.assignments.inspect
 			exit
 		end
 		@circuits = Hash.new
