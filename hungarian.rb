@@ -139,8 +139,9 @@ class Hungarian
 		def mark
 			unassigned_or_duplicate_rows = Array.new
 			capturing_columns = Array.new
-			(0..@grid.count - 1).each do |u_row| # visit all rows
-				if @assignments[ :row ].include? u_row # skip if they are assigned
+			visit_rows = Array(0..@grid.count - 1)
+			visit_rows.each_with_index do |u_row, u_row_idx| # visit all rows
+				if @assignments[ :row ].include? u_row and u_row_idx < @grid.count # skip if they are assigned
 					next
 				end
 				if !unassigned_or_duplicate_rows.include? u_row
@@ -152,12 +153,13 @@ class Hungarian
 						@grid.each_with_index do |row, r_idx|
 							if assigned?(r_idx,v_idx) and !unassigned_or_duplicate_rows.include? r_idx
 								unassigned_or_duplicate_rows.push(r_idx)
+								visit_rows.push(r_idx)
 							end
 						end
 					end
 				end
 			end
-			capturing_rows = Array (0..@grid.count - 1) # invert u_or_d later
+			capturing_rows = Array (0..@grid.count - 1) # invert this next
 			capturing_rows = capturing_rows - unassigned_or_duplicate_rows
 			return { :row => capturing_rows, :column => capturing_columns }
 		end
