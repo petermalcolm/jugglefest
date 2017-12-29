@@ -197,14 +197,14 @@ class Hungarian
 			rows_v_cols = nil
 			which_row = nil
 			which_col = nil
-			for totals[ :row ].each_with_index do |row_tot,r_idx|
+			totals[ :row ].each_with_index do |row_tot,r_idx|
 				if row_tot < min and row_tot > 0
 					min = row_tot
 					which_row = r_idx
 					rows_v_cols = 'r'
 				end
 			end
-			for totals[ :column ].each_with_index do |col_tot,c_idx|
+			totals[ :column ].each_with_index do |col_tot,c_idx|
 				if col_tot < min and col_tot > 0
 					min = col_tot
 					which_col = c_idx
