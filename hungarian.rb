@@ -38,10 +38,12 @@ class Hungarian
 			sanity += 1
 			marked = mark
 			puts "Marked Rows and Columns: " + marked.inspect
-			smallest_unmarked = smallest_un(marked)
-			subtract_from_un(marked, smallest_unmarked)
-			add_to_doubly(marked, smallest_unmarked)
-			puts "Grid after subtract and add: \n" + @grid.inspect
+			if marked[:row].count + marked[:column].count < @grid.count
+				smallest_unmarked = smallest_un(marked)
+				subtract_from_un(marked, smallest_unmarked)
+				add_to_doubly(marked, smallest_unmarked)
+				puts "Grid after subtract and add: \n" + @grid.inspect
+			end
 			@assignments = simple_assign
 			puts "Assigned Pairs: " + @assignments.inspect
 		end
@@ -162,10 +164,12 @@ class Hungarian
 					puts "min_row_col " + min_row_col.inspect + "\n\n"
 					done_marking = false
 					@grid[ min_row_col[ :row ] ].each_with_index do |val,v_idx|
-						if !done_marking and val == 0 and !c_assignments.include? v_idx
+						if !done_marking and val == 0 and !c_assignments.include? v_idx and !r_assignments.include? min_row_col[ :row ]
 							r_assignments.push(min_row_col[ :row ])
 							c_assignments.push(v_idx)
 							done_marking = true
+							# we are done with this row:
+							totals[ :row ][ min_row_col[ :row ]] = 0
 							# decrement all corresponding column totals with zeroes in this row
 							totals[ :column ][ v_idx ] = totals[ :column ][ v_idx ] - 1
 						end
@@ -177,10 +181,12 @@ class Hungarian
 					puts "min_row_col " + min_row_col.inspect + "\n\n"
 					done_marking = false
 					@grid.each_with_index do |row,r_idx|
-						if !done_marking and row[ min_row_col[ :column ] ] == 0 and !r_assignments.include? r_idx
+						if !done_marking and row[ min_row_col[ :column ] ] == 0 and !r_assignments.include? r_idx and !c_assignments.include? min_row_col[ :column ]
 							r_assignments.push(r_idx)
 							c_assignments.push(min_row_col[ :column ])
 							done_marking = true
+							# we are done with this column
+							totals[ :row ][ min_row_col[ :column ]] = 0
 							# decrement all corresponding row totals with zeroes in this column
 							totals[ :row ][ r_idx ] = totals[ :row ][ r_idx ] - 1
 						end
