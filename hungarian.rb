@@ -30,6 +30,7 @@ class Hungarian
 		sanity = 0
 		sanity_max = 7
 		while !@assignments[ :row ].count.eql? @grid.count and sanity < sanity_max
+			puts " - - - New Iteration - - - "
 			sanity += 1
 			marked = mark
 			puts "Marked Rows and Columns: " + marked.inspect
@@ -160,6 +161,7 @@ class Hungarian
 					end
 				end
 			end
+			puts "---> unassigned_or_duplicate_rows: " + unassigned_or_duplicate_rows.inspect
 			capturing_rows = Array (0..@grid.count - 1) # invert this next
 			capturing_rows = capturing_rows - unassigned_or_duplicate_rows
 			return { :row => capturing_rows, :column => capturing_columns }
