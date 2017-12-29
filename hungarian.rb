@@ -27,11 +27,13 @@ class Hungarian
 		@global_max = invert
 		subtract_row_minima
 		subtract_column_minima
-		@assignments = assign
+		@assignments = simple_assign
+		puts "First Assigned Pairs: " + @assignments.inspect
 
+		marked = { :row => Array.new, :column => Array.new }
 		sanity = 0
 		sanity_max = 7
-		while !@assignments[ :row ].count.eql? @grid.count and sanity < sanity_max
+		while marked[:row].count + marked[:column].count < @grid.count and sanity < sanity_max
 			puts " - - - New Iteration - - - "
 			sanity += 1
 			marked = mark
@@ -40,12 +42,15 @@ class Hungarian
 			subtract_from_un(marked, smallest_unmarked)
 			add_to_doubly(marked, smallest_unmarked)
 			puts "Grid after subtract and add: \n" + @grid.inspect
-			@assignments = assign
+			@assignments = simple_assign
 			puts "Assigned Pairs: " + @assignments.inspect
 		end
 		if sanity >= sanity_max
 			puts "Error! Hungarian algorithm did not converge in " + sanity.inspect + " iterations."
 			exit
+		end
+		if @assignments[:row].count < @grid.count
+			@assignments = optimal_assign
 		end
 		@solved = true
 
@@ -124,20 +129,27 @@ class Hungarian
 			end
 		end
 
-		def assign
+		def simple_assign
 			r_assignments = Array.new # rows
 			c_assignments = Array.new # columns
-			# @grid.each_with_index do |row, r_idx|
-			# 	row.each_with_index do |val, v_idx|
-			# 		if 0 == val
-			# 			if !r_assignments.include? r_idx and !c_assignments.include? v_idx
-			# 				r_assignments.push(r_idx)
-			# 				c_assignments.push(v_idx)
-			# 			end
-			# 		end
-			# 	end
-			# end
+			@grid.each_with_index do |row, r_idx|
+				row.each_with_index do |val, v_idx|
+					if 0 == val
+						if !r_assignments.include? r_idx and !c_assignments.include? v_idx
+							r_assignments.push(r_idx)
+							c_assignments.push(v_idx)
+						end
+					end
+				end
+			end
+			return { :row => r_assignments, :column => c_assignments }
+		end
+
+		def optimal_assign
+			r_assignments = Array.new # rows
+			c_assignments = Array.new # columns
 			totals = count_row_column_zeroes
+			puts "totals " + totals.inspect
 			min_row_col = find_smallest_nonzero_collection_of_zeroes(totals)
 			sanity = 0
 			sanity_max = @grid.count * 3
@@ -145,10 +157,12 @@ class Hungarian
 				sanity += 1
 				if min_row_col[ :winner ].nil? # no non-zero collections left
 					return { :row => r_assignments, :column => c_assignments }
-				elsif min_row_col[ :winner ] = 'r'
+				elsif min_row_col[ :winner ] == 'r'
+					puts "totals " + totals.inspect
+					puts "min_row_col " + min_row_col.inspect + "\n\n"
 					done_marking = false
 					@grid[ min_row_col[ :row ] ].each_with_index do |val,v_idx|
-						if !done_marking and val == 0
+						if !done_marking and val == 0 and !c_assignments.include? v_idx
 							r_assignments.push(min_row_col[ :row ])
 							c_assignments.push(v_idx)
 							done_marking = true
@@ -158,10 +172,12 @@ class Hungarian
 					end
 					# set this row to zero total
 					totals[ :row ][ min_row_col[ :row ]] = 0
-				elsif min_row_col[ :winner ] = 'c'
+				elsif min_row_col[ :winner ] == 'c'
+					puts "totals " + totals.inspect
+					puts "min_row_col " + min_row_col.inspect + "\n\n"
 					done_marking = false
 					@grid.each_with_index do |row,r_idx|
-						if !done_marking and row[ min_row_col[ :column ] ] == 0
+						if !done_marking and row[ min_row_col[ :column ] ] == 0 and !r_assignments.include? r_idx
 							r_assignments.push(r_idx)
 							c_assignments.push(min_row_col[ :column ])
 							done_marking = true
@@ -178,6 +194,7 @@ class Hungarian
 				puts "Error! Looping on Hungarian assignment step failed with totals: \n" + totals.inspect
 				exit
 			end
+			return { :row => r_assignments, :column => c_assignments }
 		end
 
 		def count_row_column_zeroes
