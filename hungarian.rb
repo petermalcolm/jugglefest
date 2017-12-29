@@ -57,6 +57,8 @@ class Hungarian
 		@solved = true
 
 		puts "Grid \n" + @grid.inspect
+
+		puts "It all adds up to: " + grid_sum(copy).inspect
 	end
 
 	protected
@@ -317,5 +319,13 @@ class Hungarian
 					@grid[r_idx][v_idx] = @grid[r_idx][v_idx] + smallest_unmarked
 				end
 			end
+		end
+
+		def grid_sum(original_grid)
+			sum = 0
+			@assignments[ :row ].each_with_index do |r_assignment,r_idx|
+				sum += original_grid[r_assignment][@assignments[ :column ][r_idx]]
+			end
+			return sum
 		end
 end
