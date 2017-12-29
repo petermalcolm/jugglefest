@@ -162,12 +162,10 @@ class Hungarian
 				elsif min_row_col[ :winner ] == 'r'
 					puts "totals " + totals.inspect
 					puts "min_row_col " + min_row_col.inspect + "\n\n"
-					done_marking = false
 					@grid[ min_row_col[ :row ] ].each_with_index do |val,v_idx|
-						if !done_marking and val == 0 and !c_assignments.include? v_idx and !r_assignments.include? min_row_col[ :row ]
+						if val == 0 and !c_assignments.include? v_idx and !r_assignments.include? min_row_col[ :row ]
 							r_assignments.push(min_row_col[ :row ])
 							c_assignments.push(v_idx)
-							done_marking = true
 							# we are done with this row:
 							totals[ :row ][ min_row_col[ :row ]] = 0
 							# decrement all corresponding column totals with zeroes in this row
@@ -179,12 +177,10 @@ class Hungarian
 				elsif min_row_col[ :winner ] == 'c'
 					puts "totals " + totals.inspect
 					puts "min_row_col " + min_row_col.inspect + "\n\n"
-					done_marking = false
 					@grid.each_with_index do |row,r_idx|
-						if !done_marking and row[ min_row_col[ :column ] ] == 0 and !r_assignments.include? r_idx and !c_assignments.include? min_row_col[ :column ]
+						if row[ min_row_col[ :column ] ] == 0 and !r_assignments.include? r_idx and !c_assignments.include? min_row_col[ :column ]
 							r_assignments.push(r_idx)
 							c_assignments.push(min_row_col[ :column ])
-							done_marking = true
 							# we are done with this column
 							totals[ :row ][ min_row_col[ :column ]] = 0
 							# decrement all corresponding row totals with zeroes in this column
