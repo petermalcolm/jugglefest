@@ -23,7 +23,10 @@ class Hungarian
 
 		# do the algorithm:
 		@global_max = invert
+		@assignments = { :row => Array.new, :column => Array.new }
+		@assignments = assign
 		subtract_row_minima
+		@assignments = assign
 		subtract_column_minima
 		@assignments = assign
 
@@ -123,8 +126,10 @@ class Hungarian
 		end
 
 		def assign
-			r_assignments = Array.new # rows
-			c_assignments = Array.new # columns
+			# r_assignments = Array.new # rows
+			# c_assignments = Array.new # columns
+			r_assignments = @assignments[ :row ]
+			c_assignments = @assignments[ :column ]
 			@grid.each_with_index do |row, r_idx|
 				row.each_with_index do |val, v_idx|
 					if 0 === val
