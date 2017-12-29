@@ -1,5 +1,7 @@
 # Implementation of the Hungarian algorithm for weighted matching
 # Big thanks to http://www.hungarianalgorithm.com/ for step-by-step
+# and https://stackoverflow.com/users/1891219/gaborsch
+# for this tip: https://stackoverflow.com/questions/15190667/hungarian-algorithm-last-step-of-selecting-0s
 
 class Hungarian
 	attr_reader :solved, :assignments
