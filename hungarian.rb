@@ -23,6 +23,7 @@ class Hungarian
 
 		# do the algorithm:
 		@global_max = invert
+		@zeroes = { :row => Array.new, :column => Array.new }
 		subtract_row_minima
 		subtract_column_minima
 		@assignments = assign
@@ -98,6 +99,13 @@ class Hungarian
 			return max
 		end
 
+		def collect_zeroes(r,c)
+			if @grid[r][c] == 0 and !assigned?(r,c,@zeroes)
+				@zeroes[ :row ].push( r )
+				@zeroes[ :column ].push( c )
+			end
+		end
+
 		def subtract_row_minima
 			@grid.each_with_index do |row, r_idx|
 				min = @global_max
@@ -106,6 +114,7 @@ class Hungarian
 				end
 				row.each_with_index do |val, v_idx|
 					@grid[r_idx][v_idx] = val - min
+					collect_zeroes(r_idx,v_idx)
 				end
 			end
 		end
@@ -118,6 +127,7 @@ class Hungarian
 				end
 				@grid.each_with_index do |row, r_idx|
 					@grid[r_idx][v_idx] = row[v_idx] - min
+					collect_zeroes(r_idx,v_idx)
 				end
 			end
 		end
@@ -125,14 +135,24 @@ class Hungarian
 		def assign
 			r_assignments = Array.new # rows
 			c_assignments = Array.new # columns
-			@grid.each_with_index do |row, r_idx|
-				row.each_with_index do |val, v_idx|
-					if 0 === val
-						if !r_assignments.include? r_idx and !c_assignments.include? v_idx
-							r_assignments.push(r_idx)
-							c_assignments.push(v_idx)
-						end
-					end
+			# @grid.each_with_index do |row, r_idx|
+			# 	row.each_with_index do |val, v_idx|
+			# 		if 0 === val
+			# 			if !r_assignments.include? r_idx and !c_assignments.include? v_idx
+			# 				r_assignments.push(r_idx)
+			# 				c_assignments.push(v_idx)
+			# 			end
+			# 		end
+			# 	end
+			# end
+			puts "Zeroes \n" + @zeroes.inspect
+			(@zeroes[ :row ].count - 1).downto(0).each do |idx|
+				r = @zeroes[ :row ][idx]
+				c = @zeroes[ :column ][idx]
+				puts "At Index " + idx.inspect + ", Grid r c = " + @grid[r][c].inspect
+				if @grid[r][c] == 0 and !r_assignments.include? r and !c_assignments.include? c
+					r_assignments.push(r)
+					c_assignments.push(c)
 				end
 			end
 			return { :row => r_assignments, :column => c_assignments }
@@ -167,9 +187,9 @@ class Hungarian
 			return { :row => capturing_rows, :column => capturing_columns }
 		end
 
-		def assigned?(r,c)
-			if @assignments[ :row ].include? r and @assignments[ :column ].include? c
-				if @assignments[ :row ].index(r) == @assignments[ :column ].index(c)
+		def assigned?(r,c,rc = @assignments)
+			if rc[ :row ].include? r and rc[ :column ].include? c
+				if rc[ :row ].index(r) == rc[ :column ].index(c)
 					return true
 				end
 			end
@@ -202,6 +222,7 @@ class Hungarian
 						next
 					end
 					@grid[r_idx][v_idx] = @grid[r_idx][v_idx] - smallest_unmarked
+					collect_zeroes(r_idx,v_idx)
 				end
 			end
 		end
