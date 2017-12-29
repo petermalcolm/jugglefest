@@ -28,24 +28,25 @@ class Hungarian
 		@assignments = assign
 
 		sanity = 0
-		while !@assignments[ :row ].count.eql? @grid.count and sanity < 1000
+		sanity_max = 7
+		while !@assignments[ :row ].count.eql? @grid.count and sanity < sanity_max
 			sanity += 1
 			marked = mark
-			puts marked.inspect
+			puts "Marked Rows and Columns: " + marked.inspect
 			smallest_unmarked = smallest_un(marked)
 			subtract_from_un(marked, smallest_unmarked)
 			add_to_doubly(marked, smallest_unmarked)
 			puts "Grid after subtract and add: \n" + @grid.inspect
 			@assignments = assign
+			puts "Assigned Pairs: " + @assignments.inspect
 		end
-		if sanity >= 1000
+		if sanity >= sanity_max
 			puts "Error! Hungarian algorithm did not converge in " + sanity.inspect + " iterations."
 			exit
 		end
 		@solved = true
 
 		puts "Grid \n" + @grid.inspect
-		# puts "Copy \n" + copy.inspect
 	end
 
 	protected
