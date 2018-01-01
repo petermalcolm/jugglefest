@@ -22,6 +22,8 @@ class JuggleFest
 		ingest_file(ARGV[0])
 		puts "Circuits: \n" + @circuits.inspect
 		puts "Jugglers: \n" + @jugglers.inspect
+		dot_product = calculate_dot_product
+		puts "Dot Product: \n" + dot_product.inspect
 	end
 
 	def ingest_file(file_name)
@@ -61,6 +63,28 @@ class JuggleFest
 		end
 	end
 
+	def calculate_dot_product
+		dot_product = Array.new
+		@jugglers.each do |juggler|
+			dp_row = Array.new
+			@circuits.each do |circuit_name,circuit_val|
+				dp = 0
+				# puts circuit.inspect
+				# exit
+				# dp_row.push( circuit.inject(0) do { |dp,circuit_val| 
+				# 	dp + circuit_val.to_i *  juggler[].to_i
+				# } )
+				circuit_val.each do |key,val| 
+					puts "\nkey: " + key.inspect
+					puts "\nval: " + val.inspect
+					dp += val.to_i * juggler[1][key].to_i 
+				end
+				dp_row.push( dp )
+			end
+			dot_product.push( dp_row )
+		end
+		return dot_product
+	end
 
 end
 
