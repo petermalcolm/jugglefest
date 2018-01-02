@@ -26,6 +26,7 @@ class JuggleFest
 		dot_product = make_it_square(dot_product)
 		puts "Dot Product: \n" + dot_product.inspect
 		pref_weights = calculate_pref_weights # the jugglers' preferences for circuits as weights
+		pref_weights = make_it_square(pref_weights)
 		puts "Pref Weights: \n" + pref_weights.inspect
 
 	end
