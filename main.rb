@@ -20,11 +20,14 @@ class JuggleFest
 		@circuits = Hash.new
 		@jugglers = Hash.new
 		ingest_file(ARGV[0])
-		# puts "Circuits: \n" + @circuits.inspect
-		# puts "Jugglers: \n" + @jugglers.inspect
+		puts "Circuits: \n" + @circuits.keys.inspect
+		puts "Jugglers: \n" + @jugglers.inspect
 		dot_product = calculate_dot_product # of @circuits x @jugglers
 		dot_product = make_it_square(dot_product)
 		puts "Dot Product: \n" + dot_product.inspect
+		pref_weights = calculate_pref_weights # the jugglers' preferences for circuits as weights
+		puts "Pref Weights: \n" + pref_weights.inspect
+
 	end
 
 	def ingest_file(file_name)
@@ -91,6 +94,14 @@ class JuggleFest
 			skinny_2d_array[r_idx] = row * ratio
 		end
 		return skinny_2d_array
+	end
+
+	def calculate_pref_weights
+		pref_weights = Array.new
+		@jugglers.each do |juggler_name,juggler_val|
+			pref_weights.push(@circuits.keys.map{ |circ| @circuits.count - juggler_val["prefs"].index(circ) - 1 })
+		end
+		return pref_weights
 	end
 
 end
