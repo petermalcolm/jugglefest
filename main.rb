@@ -20,9 +20,10 @@ class JuggleFest
 		@circuits = Hash.new
 		@jugglers = Hash.new
 		ingest_file(ARGV[0])
-		puts "Circuits: \n" + @circuits.inspect
-		puts "Jugglers: \n" + @jugglers.inspect
-		dot_product = calculate_dot_product
+		# puts "Circuits: \n" + @circuits.inspect
+		# puts "Jugglers: \n" + @jugglers.inspect
+		dot_product = calculate_dot_product # of @circuits x @jugglers
+		dot_product = make_it_square(dot_product)
 		puts "Dot Product: \n" + dot_product.inspect
 	end
 
@@ -69,14 +70,7 @@ class JuggleFest
 			dp_row = Array.new
 			@circuits.each do |circuit_name,circuit_val|
 				dp = 0
-				# puts circuit.inspect
-				# exit
-				# dp_row.push( circuit.inject(0) do { |dp,circuit_val| 
-				# 	dp + circuit_val.to_i *  juggler[].to_i
-				# } )
 				circuit_val.each do |key,val| 
-					puts "\nkey: " + key.inspect
-					puts "\nval: " + val.inspect
 					dp += val.to_i * juggler[1][key].to_i 
 				end
 				dp_row.push( dp )
@@ -84,6 +78,19 @@ class JuggleFest
 			dot_product.push( dp_row )
 		end
 		return dot_product
+	end
+
+	def make_it_square(skinny_2d_array)
+		if skinny_2d_array.count < skinny_2d_array[0].count
+			# it's actually short and fat
+			puts "Error! Cannot duplicate an array with " +skinny_2d_array.count.to_s+ " rows and " +skinny_2d_array[0].count.to_s+ " columns"
+			exit
+		end
+		ratio = skinny_2d_array.count / skinny_2d_array[0].count
+		skinny_2d_array.each_with_index do |row,r_idx|
+			skinny_2d_array[r_idx] = row * ratio
+		end
+		return skinny_2d_array
 	end
 
 end
