@@ -7,7 +7,7 @@ class Hungarian
 	attr_reader :solved, :assignments
 
 	# grid must be a square array
-	def initialize(grid, tie_breaker_grid, file_name)
+	def initialize(grid, tie_breaker_grid, file_name = nil)
 		@solved = false
 
 		if grid.nil?
@@ -187,7 +187,7 @@ class Hungarian
 								r_assignments.push(r_idx)
 								c_assignments.push(min_row_col[ :column ])
 								# we are done with this column
-								totals[ :row ][ min_row_col[ :column ]] = 0
+								totals[ :column ][ min_row_col[ :column ]] = 0
 							end
 							# decrement all corresponding row totals with zeroes in this column
 							totals[ :row ][ r_idx ] = totals[ :row ][ r_idx ] - 1

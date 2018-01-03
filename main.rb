@@ -20,15 +20,17 @@ class JuggleFest
 		@circuits = Hash.new
 		@jugglers = Hash.new
 		ingest_file(ARGV[0])
-		puts "Circuits: \n" + @circuits.keys.inspect
-		puts "Jugglers: \n" + @jugglers.inspect
+		# puts "Circuits: \n" + @circuits.keys.inspect
+		# puts "Jugglers: \n" + @jugglers.inspect
 		dot_product = calculate_dot_product # of @circuits x @jugglers
 		dot_product = make_it_square(dot_product)
 		puts "Dot Product: \n" + dot_product.inspect
 		pref_weights = calculate_pref_weights # the jugglers' preferences for circuits as weights
 		pref_weights = make_it_square(pref_weights)
 		puts "Pref Weights: \n" + pref_weights.inspect
-
+		hungarian = Hungarian.new(dot_product,pref_weights)
+		puts "Hungarian algorithm solved it? " + hungarian.solved.inspect
+		puts "Here are the assignments: " + hungarian.assignments.inspect
 	end
 
 	def ingest_file(file_name)
