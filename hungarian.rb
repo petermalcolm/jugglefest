@@ -40,6 +40,7 @@ class Hungarian
 			puts "Marked Rows and Columns: " + marked.inspect
 			if marked[:row].count + marked[:column].count < @grid.count
 				smallest_unmarked = smallest_un(marked)
+				puts "Smallest UnMarked (((( " + smallest_unmarked.to_s + " ))))"
 				subtract_from_un(marked, smallest_unmarked)
 				add_to_doubly(marked, smallest_unmarked)
 				puts "Grid after subtract and add: \n" + @grid.inspect
